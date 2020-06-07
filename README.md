@@ -2,8 +2,8 @@
 
 ## Plans:
 
-* Read XLS data 
-    * ~~Parse XLS data to JSON~~ Parse XLS to CSV ✓
+* Read XLS data ✓
+    * Parse XLS to CSV ✓
 * Save XLS data to database
     * Update database
     * Retrieve data from database
