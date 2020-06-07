@@ -1,0 +1,19 @@
+{
+  "name": "apkbackend",
+  "version": "1.0.0",
+  "description": "Back-end for APK app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adamhalim/apkbackend.git"
+  },
+  "author": "Adam Halim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adamhalim/apkbackend/issues"
+  },
+  "homepage": "https://github.com/adamhalim/apkbackend#readme"
+}
