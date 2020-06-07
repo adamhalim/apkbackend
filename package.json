@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/adamhalim/apkbackend/issues"
   },
-  "homepage": "https://github.com/adamhalim/apkbackend#readme"
+  "homepage": "https://github.com/adamhalim/apkbackend#readme",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
 }
