@@ -103,4 +103,7 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
+# Environment variables
+.env
+
 # End of https://www.toptal.com/developers/gitignore/api/linux,node
