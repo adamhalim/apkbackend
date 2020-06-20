@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/adamhalim/apkbackend#readme",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "fast-csv": "^4.3.0",
     "mysql": "^2.18.1",
     "xlsx": "^0.16.2"
   }

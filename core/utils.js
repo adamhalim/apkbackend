@@ -1,5 +1,8 @@
 const xlsx = require('xlsx');
 
+/**
+ * Converts .xls file to .csv format.
+ */
 function xlsToCsv(){
     const workBook = xlsx.readFile('data/data.xls');
     xlsx.writeFile(workBook, 'data/output.csv', {bookType: "csv"});

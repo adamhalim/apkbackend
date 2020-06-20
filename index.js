@@ -1,6 +1,7 @@
 const express = require('express');
 
 require('./core/utils.js')();
+require('./core/mysql.js')();
 
 const app = express();
 
@@ -9,4 +10,3 @@ const server = app.listen(3000, () => {
     const port = 3000;
     console.log(`Roomie listening on http://${host}:${port}`);
 });
-
