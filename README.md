@@ -5,7 +5,7 @@
 * Read XLS data ✓
     * Parse XLS to CSV ✓
 * Save XLS data to database
-    * Update database
+    * Update database   ✓
     * Retrieve data from database
     * Find changes when downloading from Systembolaget
 
