@@ -27,16 +27,19 @@ function parseCsvToMySQL(){
             // 21 idk, 22 alkhalt, 23 sortiment, 24  sortimentText, 25 ekologiskt, 26 etisk, 27 etiskEtikett, 28  koscher, 29 råvarorbeskrivning
             // 30 APK (custom)
 
-            // Columns needed for link-builder later: 0 (nr), 3 (namn), 11 (varugrupp)
-
             // SQL Table structure:
-            // +----+------+-------+-------+--------+-----+
-            // | nr | namn | namn2 | price | volume | apk |
-            // +----+------+-------+-------+--------+-----+
+            //   0      3      4       5       7        22        11   (7 * 2) / 5
+            // +----+------+-------+-------+--------+---------+----------+-----+
+            // | nr | namn | namn2 | price | volume | alcohol | category | apk |
+            // +----+------+-------+-------+--------+---------+----------+-----+
+
                     
-            // Adds another column for APK
-            // Array with correct SQL structure
-            JSONarray.push([parseInt(data[0]), `${data[3]}`, `${data[4]}`, parseInt(data[5]), parseInt(data[7]),0.543]);
+            // Array with correct SQL structure, if volume = 0, sets alcohol to NLUL instead of dividing by 0...
+           if(data[7] == 0){
+               JSONarray.push([parseInt(data[0]), `${data[3]}`, `${data[4]}`, parseFloat(data[5]), parseInt(data[7]), null, `${data[11]}`, (((parseFloat(data[7]) * data[22]) / parseFloat(data[5]))).toFixed(3)]);
+           } else {
+            JSONarray.push([parseInt(data[0]), `${data[3]}`, `${data[4]}`, parseFloat(data[5]), parseInt(data[7]), parseFloat(data[22]), `${data[11]}`, (((parseFloat(data[7]) * data[22]) / parseFloat(data[5]))).toFixed(3)]);
+           }
         })
         .on('end', function() {
             // Remove the first line (header)
@@ -45,10 +48,10 @@ function parseCsvToMySQL(){
             // Query to INSERT entire array of data
             con.connect((err) => {
                 if (err) throw err;
-                console.log('Connected to MySQL.testData');
-                let query =  `INSERT INTO drinks (nr, name, name2, price, volume, apk) VALUES ?`;
+                console.log('Connected to MySQL');
+                let query =  `INSERT INTO beverages (nr, namn, namn2, price, volume, alcohol, category, apk) VALUES ?`;
                 con.query(query, [JSONarray], (err, res) => {
-                    console.log(err || res);
+                    if (err) throw err;
                 });
             });
         });
