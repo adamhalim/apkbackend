@@ -21,6 +21,7 @@
     "express": "^4.17.1",
     "fast-csv": "^4.3.0",
     "mysql": "^2.18.1",
+    "replace-in-file": "^6.1.0",
     "xlsx": "^0.16.2"
   }
 }
