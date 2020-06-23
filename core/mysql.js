@@ -28,10 +28,18 @@ function parseCsvToMySQL(){
             // 30 APK (custom)
 
             // SQL Table structure:
-            //   0      3      4       5       7        22        11   (7 * 2) / 5
-            // +----+------+-------+-------+--------+---------+----------+-----+
-            // | nr | namn | namn2 | price | volume | alcohol | category | apk |
-            // +----+------+-------+-------+--------+---------+----------+-----+
+            // +----------+---------------+------+-----+---------+-------+
+            // | Field    | Type          | Null | Key | Default | Extra |
+            // +----------+---------------+------+-----+---------+-------+
+            // | nr       | int           | NO   | PRI | NULL    |       |  0
+            // | namn     | varchar(100)  | YES  |     | NULL    |       |  3
+            // | namn2    | varchar(100)  | YES  |     | NULL    |       |  4
+            // | price    | decimal(48,2) | YES  |     | NULL    |       |  5
+            // | volume   | smallint      | YES  |     | NULL    |       |  7
+            // | alcohol  | decimal(10,3) | YES  |     | NULL    |       |  22
+            // | category | varchar(100)  | YES  |     | NULL    |       |  11
+            // | apk      | decimal(10,3) | YES  |     | NULL    |       |  (7  *2 ) / 5
+            // +----------+---------------+------+-----+---------+-------+
 
                     
             // Array with correct SQL structure, if volume = 0, sets alcohol to NLUL instead of dividing by 0...
@@ -58,6 +66,26 @@ function parseCsvToMySQL(){
         stream.pipe(csvStream);
 }
 
+/**
+ * Returns a range of beverages from database, matching a category, ordered by apk descending.
+ * @param {Integer} lower   Lower range
+ * @param {Integer} upper   Upper range
+ * @param {String} category Category
+ */
+function selRangeCategory(lower, upper, category) {
+    con.connect((err) => {
+        if (err) throw err;
+        console.log('Connected to MySQL');
+        let query = `SELECT * FROM beverages WHERE category = '${category}' ORDER BY apk DESC LIMIT ${lower}, ${upper}`;
+        con.query(query, (err, res) => {
+            if (err) throw err;
+            console.log( err || res);
+        });
+    });
+}
+
+
 module.exports = function () {
-    this.parseCsvToMySQL = parseCsvToMySQL;    
+    this.parseCsvToMySQL = parseCsvToMySQL;
+    this.selRangeCategory = selRangeCategory;
 }
