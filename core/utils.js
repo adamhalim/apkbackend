@@ -100,33 +100,32 @@ function charReplaceLink(string){
  * and some special characters get removed, such as & and '.
  * @param {[Object]} drink Drink you want a link to.
  */
-function linkBuilder(drink) {
-    return new Promise((resolve, reject) => {
-        let namn = drink[0].namn;
-        let namn2 = drink[0].namn2;
+async function linkBuilder(drink) {
+    let namn = drink[0].namn;
+    let namn2 = drink[0].namn2;
 
-        namn = charReplaceLink(namn);
-        namn = namn.split(" ");
+    namn = charReplaceLink(namn);
+    namn = namn.split(" ");
 
+
+    if(typeof categoryTranslator(drink[0].category) == 'undefined') {
+        throw new Error('Category is undefined.');
+    }
     
-        if(typeof categoryTranslator(drink[0].category) == 'undefined') {
-            reject(new Error('Category is undefined.'));
-        }
-        
-        let link = `https://systembolaget.se/dryck/${categoryTranslator(drink[0].category)}/`;
+    let link = `https://systembolaget.se/dryck/${categoryTranslator(drink[0].category)}/`;
 
-        for(str of namn) {
+    for(str of namn) {
+        link += `${str}-`
+    }
+
+    if(namn2 == ""){
+        for(str in namn2) {
             link += `${str}-`
         }
-
-        if(namn2 == ""){
-            for(str in namn2) {
-                link += `${str}-`
-            }
-        }
-            link += drink[0].nr;
-        resolve(accents.remove(link));
-    });
+    }
+        link += drink[0].nr;
+    return accents.remove(link);
+    
 }
 
 module.exports = function () {
