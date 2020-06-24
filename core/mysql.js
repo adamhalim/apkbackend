@@ -99,17 +99,22 @@ function updateCounters() {
  * Returns a range of beverages from database, matching a category, ordered by apk descending.
  * @param {Integer} lower   Lower range
  * @param {Integer} upper   Upper range
- * @param {String} category Category
+ * @param {String} category Category, pass null if no category
  */
 function selRangeCategory(lower, upper, category) {
     return new Promise((resolve, reject) => {
 
-        category = category.toLowerCase();
 
         con.getConnection((err) => {
             if (err) throw err;
             console.log('Connected to MySQL');
-            let query = `SELECT * FROM beverages WHERE category = '${category}' ORDER BY apk DESC LIMIT ${lower}, ${upper}`;
+            let query = '';
+            if(category != null){
+                category = category.toLowerCase();
+                query = `SELECT * FROM beverages WHERE category = '${category}' ORDER BY apk DESC LIMIT ${lower}, ${upper}`;
+            } else {
+                query = `SELECT * FROM beverages ORDER BY apk DESC LIMIT ${lower}, ${upper}`;
+            }            
             con.query(query, (err, res) => {
                 if (err) reject(err);
                 console.log( err || res);
@@ -118,6 +123,7 @@ function selRangeCategory(lower, upper, category) {
         });
     }); 
 }
+
 
 module.exports = function () {
     this.parseCsvToMySQL = parseCsvToMySQL;
