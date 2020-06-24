@@ -91,28 +91,27 @@ function charReplaceLink(string){
 
 /**
  * Creates a link to Systembolaget based on the drink.
- * Currently takes an array of JSON and only makes a link for
- * the first element.
+ * Currently takes JSON and only makes a link.
  * 
  * The way Systembolaget structure their links is
  * https://systembolaget.se/dryck/${category}/${name}-${nr},
  * where the spaces in the name get replaced with a dash (-) 
  * and some special characters get removed, such as & and '.
- * @param {[Object]} drink Drink you want a link to.
+ * @param {Object} drink Drink you want a link to.
  */
 async function linkBuilder(drink) {
-    let namn = drink[0].namn;
-    let namn2 = drink[0].namn2;
+    let namn = drink.namn;
+    let namn2 = drink.namn2;
 
     namn = charReplaceLink(namn);
     namn = namn.split(" ");
 
 
-    if(typeof categoryTranslator(drink[0].category) == 'undefined') {
+    if(typeof categoryTranslator(drink.category) == 'undefined') {
         throw new Error('Category is undefined.');
     }
     
-    let link = `https://systembolaget.se/dryck/${categoryTranslator(drink[0].category)}/`;
+    let link = `https://systembolaget.se/dryck/${categoryTranslator(drink.category)}/`;
 
     for(str of namn) {
         link += `${str}-`
@@ -123,7 +122,7 @@ async function linkBuilder(drink) {
             link += `${str}-`
         }
     }
-        link += drink[0].nr;
+        link += drink.nr;
     return accents.remove(link);
     
 }
