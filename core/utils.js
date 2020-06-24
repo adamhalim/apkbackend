@@ -54,10 +54,10 @@ async function replaceChar(file, string, replacement){
  */
 function categoryTranslator(category){
     sprit = ["Vodka och Brännvin", "Akvavit och Kryddat brännvin", "Tequila och Mezcal", "Smaksatt sprit", "Gin och Genever", "Calvados",
-     "Anissprit", "Cognac", "Rom", "Drinkar och cocktails", "Grappa och marc", "Frukt och druvsprit", "Punsch", "Likör", "Whisky", "Armagnac och brandy",
+     "Anissprit", "Cognac", "Rom", "Drinkar och Cocktails", "Grappa och Marc", "Frukt och Druvsprit", "Punsch", "Likör", "Whisky", "Armagnac och Brandy",
     "Bitter", "Sprit av flera typer"]
-    apertif = ["Sake", "Apertif och dessert", "Glögg och Glühwein", "Blå stilla", "Blå mousserande", "Vermouth", "Blandlådor vin"];
-    roseviner = ["Rosévin", "Rosé; - lägre alkoholhalt"];
+    apertif = ["Sake", "Aperitif och dessert", "Glögg och Glühwein", "Blå stilla", "Blå mousserande", "Vermouth", "Blandlådor vin"];
+    roseviner = ["Rosévin", "Rosé - lägre alkoholhalt"];
     presentartiklar = ["Presentförpackningar", "Dryckestillbehör"];
     vita_viner = ["Vitt vin", "Vita - lägre alkoholhalt"];
     //ol = ["&#214;l"];
@@ -67,7 +67,7 @@ function categoryTranslator(category){
     mousserande_viner = ["Mousserande vin"];
 
     if(sprit.includes(category)) return "sprit";
-    if(apertif.includes(category)) return "apertif";
+    if(apertif.includes(category)) return "aperitif-dessert";
     if(roseviner.includes(category)) return "roseviner";
     if(presentartiklar.includes(category)) return "presentartiklar";
     if(vita_viner.includes(category)) return "vita-viner";
@@ -79,29 +79,47 @@ function categoryTranslator(category){
 }
 
 /**
+ * Replaces unwanted characters for the link builder
+ * (Needs more testning, most likely more invalid characters) 
+ * @param {String} string 
+ */
+function charReplaceLink(string){
+    string = string.replace('&', '');
+    string = string.replace('\'', '');
+    return string.replace('  ', ' ');
+}
+
+/**
  * Creates a link to Systembolaget based on the drink
  * @param {Object} drink Drink you want a link to.
  */
 function linkBuilder(drink) {
-    let namn = drink[0].namn;
-    let namn2 = drink[0].namn2;
+    return new Promise((resolve, reject) => {
+        let namn = drink[0].namn;
+        let namn2 = drink[0].namn2;
 
-    namn = namn.split(" ");
+        namn = charReplaceLink(namn);
+        namn = namn.split(" ");
+
     
-    let link = `https://systembolaget.se/dryck/${categoryTranslator(drink[0].category)}/`;
+        if(typeof categoryTranslator(drink[0].category) == 'undefined') {
+            reject(new Error('Category is undefined.', null));
+        }
+        
+        let link = `https://systembolaget.se/dryck/${categoryTranslator(drink[0].category)}/`;
 
-    for(str of namn) {
-        link += `${str}-`
-    }
-
-    if(namn2 == ""){
-        for(str in namn2) {
+        for(str of namn) {
             link += `${str}-`
         }
-    }
-        link += drink[0].nr;
-     
-    return accents.remove(link);
+
+        if(namn2 == ""){
+            for(str in namn2) {
+                link += `${str}-`
+            }
+        }
+            link += drink[0].nr;
+        resolve(accents.remove(link));
+    });
 }
 
 module.exports = function () {
