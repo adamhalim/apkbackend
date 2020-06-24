@@ -3,6 +3,7 @@ const fs = require('fs').promises;
 const replace = require('replace-in-file');
 const { writeFile, readFile } = require('fs');
 const Entities = require('html-entities').XmlEntities;
+var accents = require('remove-accents');
 
 /**
  * Converts .xls file to .csv format.
@@ -49,20 +50,20 @@ async function replaceChar(file, string, replacement){
 /**
  * Translates a category from the database to the correct category 
  * on Systembolaget's website. Used to build correct links.
- * @param {String} category 
+ * @param {String} category  Category to translate
  */
 function categoryTranslator(category){
-    sprit = ["Vodka och Br&#228;nnvin", "Akvavit och Kryddat br&#228;nnvin", "Tequila och Mezcal", "Smaksatt sprit", "Gin och Genever", "Calvados",
-     "Anissprit", "Cognac", "Rom", "Drinkar och cocktails", "Grappa och marc", "Frukt och druvsprit", "Punsch", "Lik&#246;r", "Whisky", "Armagnac och brandy",
+    sprit = ["Vodka och Brännvin", "Akvavit och Kryddat brännvin", "Tequila och Mezcal", "Smaksatt sprit", "Gin och Genever", "Calvados",
+     "Anissprit", "Cognac", "Rom", "Drinkar och cocktails", "Grappa och marc", "Frukt och druvsprit", "Punsch", "Likör", "Whisky", "Armagnac och brandy",
     "Bitter", "Sprit av flera typer"]
-    apertif = ["Sake", "Apertif och dessert", "Gl&#246;gg och Gl&#252;hwein", "Bl&#229; stilla", "Bl&#229; mousserande", "Vermouth", "Blandl&#229;dor vin"];
-    roseviner = ["Ros&#233;vin", "Ros&#233; - l&#228;gre alkoholhalt"];
-    presentartiklar = ["Presentf&#246;rpackningar", "Dryckestillbeh&#246;r"];
-    vita_viner = ["Vitt vin", "Vita - l&#228;gre alkoholhalt"];
+    apertif = ["Sake", "Apertif och dessert", "Glögg och Glühwein", "Blå stilla", "Blå mousserande", "Vermouth", "Blandlådor vin"];
+    roseviner = ["Rosévin", "Rosé; - lägre alkoholhalt"];
+    presentartiklar = ["Presentförpackningar", "Dryckestillbehör"];
+    vita_viner = ["Vitt vin", "Vita - lägre alkoholhalt"];
     //ol = ["&#214;l"];
     cider_och_blandrycker = ["Cider", "Blanddrycker"];
     //alkoholfritt = ["Alkoholfritt"];
-    roda_viner = ["R&#246;tt vin", "R&#246;da - l&#228;gre alkoholhalt"];
+    roda_viner = ["Rött vin", "Röda - lägre alkoholhalt"];
     mousserande_viner = ["Mousserande vin"];
 
     if(sprit.includes(category)) return "sprit";
@@ -77,7 +78,36 @@ function categoryTranslator(category){
     if(mousserande_viner.includes(category)) return "mousserande-viner";
 }
 
+/**
+ * Creates a link to Systembolaget based on the drink
+ * @param {Object} drink Drink you want a link to.
+ */
+function linkBuilder(drink) {
+    let namn = drink[0].namn;
+    let namn2 = drink[0].namn2;
+
+    namn = namn.split(" ");
+    
+    let link = `https://systembolaget.se/dryck/${categoryTranslator(drink[0].category)}/`;
+
+    for(str of namn) {
+        link += `${str}-`
+    }
+
+    if(namn2 == ""){
+        for(str in namn2) {
+            link += `${str}-`
+        }
+    }
+        link += drink[0].nr;
+     
+    return accents.remove(link);
+}
+
 module.exports = function () {
     this.xlsToCsv = xlsToCsv;
     this.replaceChar = replaceChar;
+    this.categoryTranslator = categoryTranslator;
+    this.linkBuilder = linkBuilder;
+    this.htmlDecoder = htmlDecoder;
 }
