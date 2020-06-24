@@ -107,3 +107,4 @@ typings/
 .env
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,node
+data/characters.json
