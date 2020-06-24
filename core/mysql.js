@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 const fs = require('fs');
 const fastcsv = require('fast-csv');
+const editJsonFile = require('edit-json-file');
 
 require('dotenv').config();
 
@@ -11,6 +12,10 @@ var con = mysql.createPool({
     password: process.env.MYSQL_PASSWORD,
     database: 'apk',
     connectionLimit: 100
+});
+
+const counters = editJsonFile('./data/counters.json', {
+    autosave: true
 });
 
 /**
@@ -55,17 +60,39 @@ function parseCsvToMySQL(){
             JSONarray.shift();
 
             // Query to INSERT entire array of data
-            con.connect((err) => {
+            con.getConnection((err) => {
                 if (err) throw err;
                 console.log('Connected to MySQL');
                 let query =  `INSERT INTO beverages (nr, namn, namn2, price, volume, alcohol, category, apk) VALUES ?`;
                 con.query(query, [JSONarray], (err, res) => {
                     if (err) throw err;
                     console.log('Successfully inserted into MySQL');
+                    updateCounters();
                 });
             });
         });
         stream.pipe(csvStream);
+}
+
+/**
+ * For each category in the database, update the amonut of items 
+ * in each category.z
+ */
+function updateCounters() {
+    let data = require('../data/counters.json');
+    for(const count in data){
+        let query = `SELECT COUNT(*) FROM beverages WHERE category=\'${count}\'`;
+        con.getConnection((err) => {
+            if (err) throw err;
+            con.query(query, (err, res) => {
+                if(err) throw err;
+                counters.set(count, res[0]['COUNT(*)']);
+            });
+        });
+        counters.set(count, 5);
+    }
+    console.log('Updated counters');
+
 }
 
 /**
@@ -74,7 +101,7 @@ function parseCsvToMySQL(){
  * @param {Integer} upper   Upper range
  * @param {String} category Category
  */
-async function selRangeCategory(lower, upper, category) {
+function selRangeCategory(lower, upper, category) {
     return new Promise((resolve, reject) => {
 
         category = category.toLowerCase();
@@ -95,4 +122,5 @@ async function selRangeCategory(lower, upper, category) {
 module.exports = function () {
     this.parseCsvToMySQL = parseCsvToMySQL;
     this.selRangeCategory = selRangeCategory;
+    this.updateCounters = updateCounters;
 }
