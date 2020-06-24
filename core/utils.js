@@ -1,12 +1,30 @@
 const xlsx = require('xlsx');
+const fs = require('fs').promises;
+const replace = require('replace-in-file');
+const { writeFile, readFile } = require('fs');
+const Entities = require('html-entities').XmlEntities;
 
 /**
  * Converts .xls file to .csv format.
  */
-function xlsToCsv(){
-    const workBook = xlsx.readFile('data/data.xls');
-    xlsx.writeFile(workBook, 'data/output.csv', {bookType: "csv"});
+async function xlsToCsv(){
+    const workBook = await xlsx.readFile('data/data.xls');
+    await xlsx.writeFile(workBook, 'data/output.csv', {bookType: "csv"});
     console.log('Converted .xls to .csv.');
+
+    // Replaces all HTML ascii values with their real values
+    await fs.writeFile('data/output.csv', htmlDecoder(await fs.readFile('data/output1.csv', 'utf8')), (err) => {
+        if (err) throw err;
+    });
+}
+
+function htmlDecoder(file){
+    const entities = new Entities();
+
+    console.log('Done converting html');
+    return entities.decode(file);
+}
+
 /**
  * Replaces characters in a file
  * @param {*} file          File to replace 
