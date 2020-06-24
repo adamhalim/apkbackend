@@ -60,6 +60,7 @@ function parseCsvToMySQL(){
                 let query =  `INSERT INTO beverages (nr, namn, namn2, price, volume, alcohol, category, apk) VALUES ?`;
                 con.query(query, [JSONarray], (err, res) => {
                     if (err) throw err;
+                    console.log('Successfully inserted into MySQL');
                 });
             });
         });
@@ -72,16 +73,22 @@ function parseCsvToMySQL(){
  * @param {Integer} upper   Upper range
  * @param {String} category Category
  */
-function selRangeCategory(lower, upper, category) {
-    con.connect((err) => {
-        if (err) throw err;
-        console.log('Connected to MySQL');
-        let query = `SELECT * FROM beverages WHERE category = '${category}' ORDER BY apk DESC LIMIT ${lower}, ${upper}`;
-        con.query(query, (err, res) => {
+async function selRangeCategory(lower, upper, category) {
+    return new Promise(resolve => {
+
+        category = category.toLowerCase();
+        
+        con.connect((err) => {
             if (err) throw err;
-            console.log( err || res);
+            console.log('Connected to MySQL');
+            let query = `SELECT * FROM beverages WHERE category = '${category}' ORDER BY apk DESC LIMIT ${lower}, ${upper}`;
+            con.query(query, (err, res) => {
+                if (err) throw err;
+                console.log( err || res);
+                resolve(res);
+            });
         });
-    });
+    }); 
 }
 
 
