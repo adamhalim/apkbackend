@@ -5,11 +5,12 @@ const fastcsv = require('fast-csv');
 require('dotenv').config();
 
 // Creates a connection to MySQL db
-var con = mysql.createConnection({
+var con = mysql.createPool({
     host: '192.168.1.227',
     user: 'apk',
     password: process.env.MYSQL_PASSWORD,
-    database: 'apk'
+    database: 'apk',
+    connectionLimit: 100
 });
 
 /**
@@ -74,23 +75,22 @@ function parseCsvToMySQL(){
  * @param {String} category Category
  */
 async function selRangeCategory(lower, upper, category) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
 
         category = category.toLowerCase();
-        
-        con.connect((err) => {
+
+        con.getConnection((err) => {
             if (err) throw err;
             console.log('Connected to MySQL');
             let query = `SELECT * FROM beverages WHERE category = '${category}' ORDER BY apk DESC LIMIT ${lower}, ${upper}`;
             con.query(query, (err, res) => {
-                if (err) throw err;
+                if (err) reject(err);
                 console.log( err || res);
                 resolve(res);
             });
         });
     }); 
 }
-
 
 module.exports = function () {
     this.parseCsvToMySQL = parseCsvToMySQL;
