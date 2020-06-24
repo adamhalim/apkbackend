@@ -90,8 +90,15 @@ function charReplaceLink(string){
 }
 
 /**
- * Creates a link to Systembolaget based on the drink
- * @param {Object} drink Drink you want a link to.
+ * Creates a link to Systembolaget based on the drink.
+ * Currently takes an array of JSON and only makes a link for
+ * the first element.
+ * 
+ * The way Systembolaget structure their links is
+ * https://systembolaget.se/dryck/${category}/${name}-${nr},
+ * where the spaces in the name get replaced with a dash (-) 
+ * and some special characters get removed, such as & and '.
+ * @param {[Object]} drink Drink you want a link to.
  */
 function linkBuilder(drink) {
     return new Promise((resolve, reject) => {
@@ -103,7 +110,7 @@ function linkBuilder(drink) {
 
     
         if(typeof categoryTranslator(drink[0].category) == 'undefined') {
-            reject(new Error('Category is undefined.', null));
+            reject(new Error('Category is undefined.'));
         }
         
         let link = `https://systembolaget.se/dryck/${categoryTranslator(drink[0].category)}/`;
