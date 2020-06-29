@@ -103,6 +103,7 @@ async function linkBuilder(drink) {
     let namn = drink.namn;
     let namn2 = drink.namn2;
 
+
     namn = charReplaceLink(namn);
     namn = namn.split(" ");
 
@@ -127,10 +128,19 @@ async function linkBuilder(drink) {
     
 }
 
+/**
+ * Checks if object is empty.
+ * @param {Object} object 
+ */
+function objIsEmpty(object) {
+    return !Object.keys(object).length;
+}
+
 module.exports = function () {
     this.xlsToCsv = xlsToCsv;
     this.replaceChar = replaceChar;
     this.categoryTranslator = categoryTranslator;
     this.linkBuilder = linkBuilder;
     this.htmlDecoder = htmlDecoder;
+    this.objIsEmpty = objIsEmpty;
 }
