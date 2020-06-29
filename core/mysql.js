@@ -44,7 +44,7 @@ function parseCsvToMySQL(){
             // | volume   | smallint      | YES  |     | NULL    |       |  7
             // | alcohol  | decimal(10,3) | YES  |     | NULL    |       |  22
             // | category | varchar(100)  | YES  |     | NULL    |       |  11
-            // | apk      | decimal(10,3) | YES  |     | NULL    |       |  (7  *2 ) / 5
+            // | apk      | decimal(10,3) | YES  |     | NULL    |       |  (7  * 22) / 5
             // +----------+---------------+------+-----+---------+-------+
 
                     
@@ -103,8 +103,6 @@ function updateCounters() {
  */
 function selRangeCategory(lower, upper, category) {
     return new Promise((resolve, reject) => {
-
-
         con.getConnection((err) => {
             if (err) throw err;
             console.log('Connected to MySQL');
@@ -116,9 +114,17 @@ function selRangeCategory(lower, upper, category) {
                 query = `SELECT * FROM beverages ORDER BY apk DESC LIMIT ${lower}, ${upper}`;
             }            
             con.query(query, (err, res) => {
-                if (err) reject(err);
-                console.log( err || res);
-                resolve(res);
+                if (err) {
+                    reject(err);
+                    console.log(err);
+                }
+                
+                if(objIsEmpty(res)) {
+                    //reject(('No entires found.'));
+                    reject(new Error('No entires found.'));
+                } else {
+                    resolve(res);
+                }
             });
         });
     }); 
