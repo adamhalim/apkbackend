@@ -106,5 +106,8 @@ typings/
 # Environment variables
 .env
 
+# Test client (budget POSTMAN)
+.testClient.js
+
 # End of https://www.toptal.com/developers/gitignore/api/linux,node
 data/characters.json
