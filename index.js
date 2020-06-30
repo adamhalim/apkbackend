@@ -21,18 +21,35 @@ app.get('/beverages/',[
 ], (req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
-        const status = 422;
         res.status(422).json
         return res.status(422).json({success: false, errors: errors.array()
-
         });
     }
     selRangeCategory(req.body.lower, req.body.upper, req.body.category)
         .then((data) => {            
-
             return res.send({success: true, body: data});
         })
         .catch((err) => {
             return res.json({success: false, errors: `${err}`})
         })
+});
+
+app.get('/page/', [
+    body('pageNum').isInt(),
+    body('category').isString()
+
+], (req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        res.status(422).json
+        return res.status(422).json({success: false, errors: errors.array()
+        });
+    }
+    getPage(req.body.pageNum, req.body.category)
+        .then((data) => {
+            return res.send({success: true, body: data});
+        })
+        .catch((err) => {
+            return res.json({success: false, errors: `${err}`})
+        });
 });
