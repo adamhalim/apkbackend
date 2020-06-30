@@ -141,16 +141,14 @@ async function getPage(pageNum, category) {
     let lower = pageNum * PAGE_SIZE;
 
     if(pageNum < 0 || pageNum > maxPage(category)) {
-        return new Error(`Please enter a page between 0 and ${maxPage(category)}`);
+        throw new Error(`Please enter a page between 0 and ${maxPage(category)}`);
     }
 
     if(pageNum = maxPage(category)) {
-        console.log(counters.get(category) % PAGE_SIZE);
         upper = counters.get(category) % PAGE_SIZE;
     }
     return await selRangeCategory(lower, upper, category);
 }
-
 
 module.exports = function () {
     this.parseCsvToMySQL = parseCsvToMySQL;
