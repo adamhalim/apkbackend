@@ -130,9 +130,31 @@ function selRangeCategory(lower, upper, category) {
     }); 
 }
 
+/**
+ * Returns a page with beverages; a page 
+ * is 10 beverages.
+ * @param {Integer} pageNum 
+ * @param {String} category 
+ */
+async function getPage(pageNum, category) {
+    let upper = PAGE_SIZE;
+    let lower = pageNum * PAGE_SIZE;
+
+    if(pageNum < 0 || pageNum > maxPage(category)) {
+        return new Error(`Please enter a page between 0 and ${maxPage(category)}`);
+    }
+
+    if(pageNum = maxPage(category)) {
+        console.log(counters.get(category) % PAGE_SIZE);
+        upper = counters.get(category) % PAGE_SIZE;
+    }
+    return await selRangeCategory(lower, upper, category);
+}
+
 
 module.exports = function () {
     this.parseCsvToMySQL = parseCsvToMySQL;
     this.selRangeCategory = selRangeCategory;
     this.updateCounters = updateCounters;
+    this.getPage = getPage;
 }
