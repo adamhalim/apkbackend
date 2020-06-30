@@ -17,11 +17,16 @@
 
 ### GET /beverages/
 
+
 Runs `selRangeCategory()` and returns the result of the function. The function takes
 a lower limit, an upper limit and a category to query the database and returns data ordered 
 by apk descending matching the specified category.
 
-Example body: 
+<details>
+
+<summary>Example:</summary>
+
+Body: 
 
 ```json
 lower: 0,
@@ -29,7 +34,7 @@ upper: 2,
 category: 'Whisky'
 ```
 
-Example response:
+Response:
 
 ```json
 [ RowDataPacket {
@@ -51,19 +56,24 @@ Example response:
     category: 'Whisky',
     apk: 1.29 } ]
 ```
+</details>
 
 ### GET /page/
 
 Runs `getPage(pageNum, category)` and returns the result of the function.
 
-Example body: 
+<details>
+
+<summary>Example:</summary>
+
+Body: 
 
 ```json
 pageNum: 5
 category: 'Whisky'
 ```
 
-Example response:
+Response:
 
 ```json
 { success: true,
@@ -133,3 +143,5 @@ Example response:
        category: 'Whisky',
        apk: 1.037 } ] }
 ```
+
+</details>
