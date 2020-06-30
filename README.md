@@ -28,7 +28,7 @@ by apk descending matching the specified category.
 
 Body: 
 
-```json
+```js
 lower: 0,
 upper: 2,
 category: 'Whisky'
@@ -75,7 +75,7 @@ category: 'Whisky'
 
 Response:
 
-```json
+```js
 { success: true,
   body:
    [ { nr: 8537001,
