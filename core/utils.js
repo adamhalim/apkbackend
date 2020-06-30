@@ -153,7 +153,7 @@ function maxPage(category) {
 
     for(const count in data) {
         if (count == category) {
-            return Math.ceil((counters.get(count)) / PAGE_SIZE);
+            return (Math.ceil((counters.get(count)) / PAGE_SIZE) - 1);
         }
     }
     return new Error('Category not found');
