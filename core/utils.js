@@ -28,7 +28,6 @@ async function xlsToCsv(){
 
 function htmlDecoder(file){
     const entities = new Entities();
-
     console.log('Done converting html');
     return entities.decode(file);
 }
@@ -48,9 +47,6 @@ async function replaceChar(file, string, replacement){
     };
     await replace(options, (error, results) => {
         if (error) return console.error('Error occured:', error);
-
-        console.log(`Replaced ${string} with ${replacement}`);
-        console.log(results);
     });
 }
 
@@ -110,10 +106,10 @@ async function linkBuilder(drink) {
     let namn = drink.namn;
     let namn2 = drink.namn2;
 
-
     namn = charReplaceLink(namn);
     namn = namn.split(" ");
-
+    namn2 = charReplaceLink(namn2);
+    namn2 = namn.split(" ");
 
     if(typeof categoryTranslator(drink.category) == 'undefined') {
         throw new Error('Category is undefined.');

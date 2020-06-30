@@ -71,7 +71,7 @@ function parseCsvToMySQL(){
                 });
             });
         });
-        stream.pipe(csvStream);
+    stream.pipe(csvStream);
 }
 
 /**
@@ -92,7 +92,6 @@ function updateCounters() {
         counters.set(count, 5);
     }
     console.log('Updated counters');
-
 }
 
 /**
@@ -118,7 +117,6 @@ function selRangeCategory(lower, upper, category) {
                     reject(err);
                     console.log(err);
                 }
-                
                 if(objIsEmpty(res)) {
                     //reject(('No entires found.'));
                     reject(new Error('No entires found.'));
