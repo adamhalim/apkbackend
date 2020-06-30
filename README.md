@@ -36,7 +36,7 @@ category: 'Whisky'
 
 Response:
 
-```json
+```js
 [ RowDataPacket {
     nr: 48401,
     namn: 'The Talisman',
@@ -68,7 +68,7 @@ Runs `getPage(pageNum, category)` and returns the result of the function.
 
 Body: 
 
-```json
+```js
 pageNum: 5
 category: 'Whisky'
 ```
