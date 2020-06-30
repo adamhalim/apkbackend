@@ -4,6 +4,13 @@ const replace = require('replace-in-file');
 const { writeFile, readFile } = require('fs');
 const Entities = require('html-entities').XmlEntities;
 var accents = require('remove-accents');
+const editJsonFile = require('edit-json-file');
+
+global.PAGE_SIZE = 10;
+
+const counters = editJsonFile('./data/counters.json', {
+    autosave: true
+});
 
 /**
  * Converts .xls file to .csv format.
@@ -136,6 +143,22 @@ function objIsEmpty(object) {
     return !Object.keys(object).length;
 }
 
+/**
+ * Returns the maximum amount of page 
+ * for the given category.
+ * @param {String} category 
+ */
+function maxPage(category) {
+    let data = require('../data/counters.json');
+
+    for(const count in data) {
+        if (count == category) {
+            return Math.ceil((counters.get(count)) / PAGE_SIZE);
+        }
+    }
+    return new Error('Category not found');
+}
+
 module.exports = function () {
     this.xlsToCsv = xlsToCsv;
     this.replaceChar = replaceChar;
@@ -143,4 +166,5 @@ module.exports = function () {
     this.linkBuilder = linkBuilder;
     this.htmlDecoder = htmlDecoder;
     this.objIsEmpty = objIsEmpty;
+    this.maxPage = maxPage;
 }
