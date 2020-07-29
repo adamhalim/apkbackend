@@ -48,7 +48,7 @@ function parseCsvToMySQL(){
             // +----------+---------------+------+-----+---------+-------+
 
                     
-            // Array with correct SQL structure, if volume = 0, sets alcohol to NLUL instead of dividing by 0...
+            // Array with correct SQL structure, if volume = 0, sets alcohol to NULL instead of dividing by 0...
            if(data[7] == 0){
                JSONarray.push([parseInt(data[0]), `${data[3]}`, `${data[4]}`, parseFloat(data[5]), parseInt(data[7]), null, `${data[11]}`, (((parseFloat(data[7]) * data[22]) / parseFloat(data[5]))).toFixed(3)]);
            } else {
@@ -75,8 +75,8 @@ function parseCsvToMySQL(){
 }
 
 /**
- * For each category in the database, update the amonut of items 
- * in each category.z
+ * For each category in the database, update the amount of items 
+ * in each category.
  */
 function updateCounters() {
     let data = require('../data/counters.json');
