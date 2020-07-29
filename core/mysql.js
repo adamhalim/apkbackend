@@ -47,8 +47,17 @@ function parseCsvToMySQL(){
             // | apk      | decimal(10,3) | YES  |     | NULL    |       |  (7  * 22) / 5
             // +----------+---------------+------+-----+---------+-------+
 
+            // This loop will iterate through the .csv file, entry by entry, and 
+            // use the local variable data[] for the entry, where each index is described 
+            // by the comments at the top (index 0-29).
+
+            // We want to create an array matching this SQL table structure. We can do this
+            // by pushing the correct indexes of data[], using the indexes above for help.
+            // The correct array should look like this (without parsing and special checks): 
+
+            // JSONarray = {data[0], data[3], data[4], data[5], data[7], data[22], data[11], (data[7] * data[22]) / data[5] }
                     
-            // Array with correct SQL structure, if volume = 0, sets alcohol to NULL instead of dividing by 0...
+            // if volume = 0, this will set alcohol to NULL instead of dividing by 0.
            if(data[7] == 0){
                JSONarray.push([parseInt(data[0]), `${data[3]}`, `${data[4]}`, parseFloat(data[5]), parseInt(data[7]), null, `${data[11]}`, (((parseFloat(data[7]) * data[22]) / parseFloat(data[5]))).toFixed(3)]);
            } else {
@@ -56,7 +65,7 @@ function parseCsvToMySQL(){
            }
         })
         .on('end', function() {
-            // Remove the first line (header)
+            // Remove the first line (header) 
             JSONarray.shift();
 
             // Query to INSERT entire array of data
@@ -80,6 +89,8 @@ function parseCsvToMySQL(){
  */
 function updateCounters() {
     let data = require('../data/counters.json');
+    // This will query the database and retrieve the amount 
+    // of entries for each category in the database.
     for(const count in data){
         let query = `SELECT COUNT(*) FROM beverages WHERE category=\'${count}\'`;
         con.getConnection((err) => {
@@ -101,11 +112,15 @@ function updateCounters() {
  * @param {String} category Category, pass null if no category
  */
 function selRangeCategory(lower, upper, category) {
+    // Creates a Promise object of the SQL query so that 
+    // this code can be called asynchronously (if that is a word?).
     return new Promise((resolve, reject) => {
         con.getConnection((err) => {
             if (err) throw err;
             console.log('Connected to MySQL');
             let query = '';
+            // If you pass null as a category, it will return all 
+            // beverages in the specified range.
             if(category != null){
                 category = category.toLowerCase();
                 query = `SELECT * FROM beverages WHERE category = '${category}' ORDER BY apk DESC LIMIT ${lower}, ${upper}`;
@@ -121,6 +136,7 @@ function selRangeCategory(lower, upper, category) {
                     //reject(('No entires found.'));
                     reject(new Error('No entires found.'));
                 } else {
+                    // If the query was successful, resolve the promise.
                     resolve(res);
                 }
             });
@@ -142,6 +158,11 @@ async function getPage(pageNum, category) {
         throw new Error(`Please enter a page between 0 and ${maxPage(category)}`);
     }
 
+    // If you want to retrieve the last page, the upper 
+    // limit for selRangeCategory will be the last 
+    // beverage. For example, if you want page 3 for a 
+    // category with 36 entires, upper will be 
+    // set to 6 instead of 10. (lower will be 30)
     if(pageNum = maxPage(category)) {
         upper = counters.get(category) % PAGE_SIZE;
     }

@@ -14,19 +14,26 @@ const counters = editJsonFile('./data/counters.json', {
 
 /**
  * Converts .xls file to .csv format.
+ * This will read from data/data.xls and use the xlsx module
+ * to convert it to .csv. The output file will be stored in data/output.csv
  */
 async function xlsToCsv(){
     const workBook = await xlsx.readFile('data/data.xls');
     await xlsx.writeFile(workBook, 'data/output.csv', {bookType: "csv"});
     console.log('Converted .xls to .csv.');
 
+    // Somwhere along the way some characters get HTML encoding. 
+    // This seems to be from the xlsx module. So when the output file 
+    // is done, this will run a html decoderr that replaces all HTML 
+    // ascii values with their real values
     await fs.writeFile('data/output.csv', htmlDecoder(await fs.readFile('data/output1.csv', 'utf8')), (err) => {
         if (err) throw err;
     });
 }
 
 /**
- * Replaces all HTML ascii values with their real values
+ * Replaces all HTML ascii values with their real values.
+ * Uses the html-entities module.
  * @param {File} file 
  */
 function htmlDecoder(file){
@@ -36,7 +43,9 @@ function htmlDecoder(file){
 }
 
 /**
- * Replaces characters in a file
+ * Replaces characters in a file.
+ * Uses the replace-in-file module. 
+ * Currently not used anywhere.
  * @param {*} file          File to replace 
  * @param {*} string        String to replace
  * @param {*} replacement   Replacement string
@@ -87,6 +96,7 @@ function categoryTranslator(category){
 /**
  * Replaces unwanted characters for the link builder
  * (Needs more testning, most likely more invalid characters) 
+ * So far, these characters have been found to be invalid: { '&', '\', ' ' }
  * @param {String} string 
  */
 function charReplaceLink(string){
@@ -97,7 +107,7 @@ function charReplaceLink(string){
 
 /**
  * Creates a link to Systembolaget based on the drink.
- * Currently takes JSON and only makes a link.
+ * Currently takes JSON and only makes one link.
  * 
  * The way Systembolaget structure their links is
  * https://systembolaget.se/dryck/${category}/${name}-${nr},
@@ -109,6 +119,10 @@ async function linkBuilder(drink) {
     let namn = drink.namn;
     let namn2 = drink.namn2;
 
+    // Certain characters are removed from 
+    // drink's names from the URL on Systembolaget. 
+    // This will run a function that remove these 
+    // characters from the link.
     namn = charReplaceLink(namn);
     namn = namn.split(" ");
     namn2 = charReplaceLink(namn2);
@@ -118,8 +132,14 @@ async function linkBuilder(drink) {
         throw new Error('Category is undefined.');
     }
     
+
     let link = `https://systembolaget.se/dryck/${categoryTranslator(drink.category)}/`;
 
+    // We now have the base URL for the drink. We only need to add '${name}-${nr}'
+    // If a drink has a name with multiple words, for example Norrlands Guld, the 
+    // URL for it will be '.../norrlands-guld-nr'. That's why we split the name earlier 
+    // at each whitespace and now iterate through each substring, adding a dash between each
+    // word.
     for(str of namn) {
         link += `${str}-`
     }
@@ -135,7 +155,9 @@ async function linkBuilder(drink) {
 }
 
 /**
- * Checks if object is empty.
+ * Checks if object is empty. 
+ * More readable than using the 
+ * actual code itself.
  * @param {Object} object 
  */
 function objIsEmpty(object) {
@@ -150,8 +172,16 @@ function objIsEmpty(object) {
 function maxPage(category) {
     let data = require('../data/counters.json');
 
+    // This will check through all the categories counters
+    // in data/counters.json. If the matching category is found,
+    // it will divide the counter by the defined PAGE_SIZE and round it
+    // up to an even integer and subtract one. This will give us 
+    // how many pages we can use to fit all the beverages 
+    // in a given category.
     for(const count in data) {
         if (count == category) {
+            // TODO: This will return 0 if the counter is smaller 
+            // than 11. It should return 1.
             return (Math.ceil((counters.get(count)) / PAGE_SIZE) - 1);
         }
     }
