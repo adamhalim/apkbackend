@@ -26,7 +26,7 @@ async function xlsToCsv(){
     // This seems to be from the xlsx module. So when the output file 
     // is done, this will run a html decoderr that replaces all HTML 
     // ascii values with their real values
-    await fs.writeFile('data/output.csv', htmlDecoder(await fs.readFile('data/output1.csv', 'utf8')), (err) => {
+    await fs.writeFile('data/output.csv', htmlDecoder(await fs.readFile('data/output.csv', 'utf8')), (err) => {
         if (err) throw err;
     });
 }
