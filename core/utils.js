@@ -20,7 +20,6 @@ async function xlsToCsv(){
     await xlsx.writeFile(workBook, 'data/output.csv', {bookType: "csv"});
     console.log('Converted .xls to .csv.');
 
-    // Replaces all HTML ascii values with their real values
     await fs.writeFile('data/output.csv', htmlDecoder(await fs.readFile('data/output1.csv', 'utf8')), (err) => {
         if (err) throw err;
     });
