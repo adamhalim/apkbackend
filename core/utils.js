@@ -26,6 +26,10 @@ async function xlsToCsv(){
     });
 }
 
+/**
+ * Replaces all HTML ascii values with their real values
+ * @param {File} file 
+ */
 function htmlDecoder(file){
     const entities = new Entities();
     console.log('Done converting html');
