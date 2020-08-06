@@ -161,8 +161,8 @@ async function getPage(pageNum, category) {
     // If you want to retrieve the last page, the upper 
     // limit for selRangeCategory will be the last 
     // beverage. For example, if you want page 3 for a 
-    // category with 36 entires, upper will be 
-    // set to 6 instead of 10. (lower will be 30)
+    // category with 46 entires, upper will be 
+    // set to 6 instead of 10. (lower will be 40)
     if(pageNum = maxPage(category)) {
         upper = counters.get(category) % PAGE_SIZE;
     }
