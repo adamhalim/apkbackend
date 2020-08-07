@@ -5,6 +5,7 @@ const { writeFile, readFile } = require('fs');
 const Entities = require('html-entities').XmlEntities;
 var accents = require('remove-accents');
 const editJsonFile = require('edit-json-file');
+const child_process = require('child_process');
 
 global.PAGE_SIZE = 10;
 
@@ -188,6 +189,20 @@ function maxPage(category) {
     return new Error('Category not found');
 }
 
+/**
+ * Downloads a new .xls file with all items from Systembolaget. 
+ * This will spawn and run wget to download the file.
+ * TODO: Better naming scheme with date/time (good to have a stack 
+ * of multiple different times to test with the auto DB updater)
+ */
+function downloadWget() {
+    let wget = 'wget -O ./data/newXls.xls https://www.systembolaget.se/api/assortment/products/xls';
+    let child = child_process.exec(wget, (err, stderr, stdout) => {
+        if (err) throw err;
+        console.log('Downloaded new .xls from Systembolaget.');
+    });
+}
+
 module.exports = function () {
     this.xlsToCsv = xlsToCsv;
     this.replaceChar = replaceChar;
@@ -196,4 +211,5 @@ module.exports = function () {
     this.htmlDecoder = htmlDecoder;
     this.objIsEmpty = objIsEmpty;
     this.maxPage = maxPage;
+    this.downloadWget = downloadWget;
 }
