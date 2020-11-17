@@ -1,5 +1,11 @@
 # Back-end for APK app
 
+# UPDATE:
+
+1st november 2020, Systembolaget changed their policies regarding their "API". They 
+no longer provide the .csv file with all of their products. This means that they have 
+to be gathered manually. A web scraper is planned soon™ :)
+
 ## Plans:
 
 * Read XLS data ✓
