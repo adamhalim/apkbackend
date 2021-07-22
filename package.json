@@ -28,6 +28,6 @@
     "replace-in-file": "^6.1.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
-    "xlsx": "^0.16.2"
+    "xlsx": "^0.17.0"
   }
 }
